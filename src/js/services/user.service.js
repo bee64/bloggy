@@ -44,10 +44,7 @@ export default class User {
 		} else {
 			this._$http({
 				url: this._AppConstants.api + '/user',
-				method: 'GET',
-				headers: {
-					Authorization: 'Token ' + this._JWT.get()
-				}
+				method: 'GET'
 			})
 			.then(
 			(res) => {
@@ -59,6 +56,21 @@ export default class User {
 				deferred.resolve(false);
 			});
 		}
+		return deferred.promise;
+	}
+
+	ensureAuthIs(state) {
+		let deferred = this._$q.defer();
+
+		this.verifyAuth().then(
+			(authValid) => {
+				if(authValid !== state) {
+					this._$state.go('app.home');
+					deferred.resolve(false);
+				} else {
+					deferred.resolve(true);
+				}
+			});
 		return deferred.promise;
 	}
 
