@@ -12,6 +12,19 @@ export default class User {
 		this.current = null;
 	}
 
+	update(fields) {
+		return this._$http({
+			url: this._AppConstants.api + '/user',
+			method: 'PUT',
+			data: {user: fields}
+		}).then(
+			(res) => {
+				this.current = res.data.user;
+				return this.current;
+			}
+		);
+	}
+
 	attemptAuth(type, credentials) {
 		let route = (type === 'login') ? '/login' : '';
 		return this._$http({
@@ -78,6 +91,6 @@ export default class User {
 		this.current = null;
 		this._JWT.destroy();
 		// Hard state reload
-		$state.go($state.current, {}, {reload: true});
+		this._$state.go(this._$state.current, {}, {reload: true});
 	}
 }
